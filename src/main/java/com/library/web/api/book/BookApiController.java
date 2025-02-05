@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.library.config.auth.PrincipalDetails;
-
+import com.library.service.book.BookService;
 import com.library.web.dto.ResponseDto;
+import com.library.web.dto.book.BookListRespDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,11 +21,14 @@ import lombok.RequiredArgsConstructor;
 @CrossOrigin(origins = "http://127.0.0.1:3000")
 public class BookApiController {
 	
-	@GetMapping("/s/info")
-	public ResponseEntity<?> bookInfo(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-		
+	private final BookService bookService;
 	
-		return new ResponseEntity<>(new ResponseDto<>(1, "도서 정보 리스트 조회 성공", null), HttpStatus.OK);
+	@GetMapping("/s/all")
+	public ResponseEntity<?> bookInfoList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+		
+		BookListRespDto bookList = bookService.getAllBookList(principalDetails.getUser());
+	
+		return new ResponseEntity<>(new ResponseDto<>(1, "도서 정보 리스트 조회 성공", bookList), HttpStatus.OK);
 	}
 
 }
