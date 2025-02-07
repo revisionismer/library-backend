@@ -6,7 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum BookConditionEnum {
-	NEWBOOK("신규도서"), EBOOK("E-BOOK"), USEDBOOK("중고도서");
+	NEWBOOK("신규도서"), USEDBOOK("중고도서"), EBOOK("E-BOOK");
 	
 	private String value;
 }
