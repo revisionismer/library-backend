@@ -5,13 +5,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.library.config.auth.PrincipalDetails;
 import com.library.service.book.BookService;
 import com.library.web.dto.ResponseDto;
 import com.library.web.dto.book.BookListRespDto;
+import com.library.web.dto.book.BookRespDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -29,6 +33,14 @@ public class BookApiController {
 		BookListRespDto bookList = bookService.getAllBookList(principalDetails.getUser());
 	
 		return new ResponseEntity<>(new ResponseDto<>(1, "도서 정보 리스트 조회 성공", bookList), HttpStatus.OK);
+	}
+	
+	@PostMapping("/s/register")
+	public ResponseEntity<?> registerBook(@RequestPart(value = "file", required = false) MultipartFile bookImageFile, @RequestPart("bookObj") String bookString, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+		
+		BookRespDto bookRespDto = bookService.setNewBook(principalDetails.getUser(), bookString, bookImageFile);
+		
+		return new ResponseEntity<>(new ResponseDto<>(1, "도서 정보 등록 성공", bookRespDto), HttpStatus.OK);
 	}
 
 }
