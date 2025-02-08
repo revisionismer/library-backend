@@ -13,6 +13,8 @@ import com.library.web.dto.book.BookReqDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -60,6 +62,8 @@ public class Book {
 	
 	private String releaseDate; // 1-9. 출판일
 	
+	@Enumerated(value = EnumType.STRING)
+	@Column(nullable = false)
 	private BookConditionEnum bookCondition; // 1-10. 신규도서/E-Book/중고도서
 	
 	private String bookImageUrl;  // 1-11. 도서 이미지 저장 경로
