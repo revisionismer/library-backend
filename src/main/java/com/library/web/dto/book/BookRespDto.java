@@ -17,6 +17,8 @@ public class BookRespDto {
 	
 	private String bookName;
 	
+	private String author;
+	
 	private BigDecimal unitPrice;
 	
 	private String description; 
@@ -40,6 +42,7 @@ public class BookRespDto {
 	public BookRespDto(Book bookEntity) {
 		this.bookId = bookEntity.getId();
 		this.bookName = bookEntity.getName();
+		this.author = bookEntity.getAuthor();
 		this.unitPrice = bookEntity.getUnitPrice();
 		this.description = bookEntity.getDescription();
 		this.publisher = bookEntity.getPublisher();

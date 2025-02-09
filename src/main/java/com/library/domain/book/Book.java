@@ -49,7 +49,7 @@ public class Book {
 	private String author; // 1-3. 작가
 	
 	@Min(value = 0, message = "0보다 큰 금액이여야 합니다.")
-	@Digits(integer = 8, fraction = 2, message = "1억원 미만으로 설정해야 하고 소수점은 2개까지 허용합니다.")  // 정수 부분과 소수 부분의 자릿수 제한을 검증한다. integer 속성은 정수의 자릿수를, fraction 속성은 소수 이하 자릿수를 지정한다.
+	@Digits(integer = 8, fraction = 0, message = "1억원 미만으로 설정해야 하고 소수점은 허용하지 않습니다.")  // 정수 부분과 소수 부분의 자릿수 제한을 검증한다. integer 속성은 정수의 자릿수를, fraction 속성은 소수 이하 자릿수를 지정한다.
 	private BigDecimal unitPrice;  // 1-4. 단가
 	
 	private String description; // 1-5. 설명	
