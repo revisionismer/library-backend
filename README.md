@@ -7,3 +7,4 @@
 5. 이미지 업로드가 가능한 도서 등록 서비스 구현
 6. Book 도메인 ENUM 변수 EnumType을 String으로 변경
 7. BookRespDto 생성자 수정 및 등록된 도서 이미지를 불러오기를 위해 WebMvcConfig 추가
+8. User 테이블 id값으로 User 정보 조회 API 서비스 구현
