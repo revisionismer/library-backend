@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -28,7 +29,7 @@ public class BookApiController {
 	private final BookService bookService;
 	
 	@GetMapping("/s/all")
-	public ResponseEntity<?> bookInfoList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+	public ResponseEntity<?> readBookList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
 		
 		BookListRespDto bookList = bookService.getAllBookList(principalDetails.getUser());
 	
@@ -36,11 +37,19 @@ public class BookApiController {
 	}
 	
 	@PostMapping("/s/register")
-	public ResponseEntity<?> registerBook(@RequestPart(value = "file", required = false) MultipartFile bookImageFile, @RequestPart("bookObj") String bookString, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+	public ResponseEntity<?> createBook(@RequestPart(value = "file", required = false) MultipartFile bookImageFile, @RequestPart("bookObj") String bookString, @AuthenticationPrincipal PrincipalDetails principalDetails) {
 		
 		BookRespDto bookRespDto = bookService.setNewBook(principalDetails.getUser(), bookString, bookImageFile);
 		
 		return new ResponseEntity<>(new ResponseDto<>(1, "도서 정보 등록 성공", bookRespDto), HttpStatus.OK);
+	}
+	
+	@GetMapping("/s/{bookId}/info")
+	public ResponseEntity<?> readlBookOne(@PathVariable("bookId") Long id, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+		
+		BookRespDto bookRespDto = bookService.getBookByBookId(id, principalDetails.getUser());
+		
+		return new ResponseEntity<>(new ResponseDto<>(1, id + "번 도서 정보 조회 성공", bookRespDto), HttpStatus.OK);
 	}
 
 }

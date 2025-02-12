@@ -2,6 +2,7 @@ package com.library.service.book;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,6 +72,20 @@ public class BookService {
 		Book newBook = bookRepository.save(bookEntity);
 		
 		return new BookRespDto(newBook);
+		
+	}
+	
+	public BookRespDto getBookByBookId(Long bookId, User loginUser) {
+		
+		Optional<Book> bookOp = bookRepository.findById(bookId);
+		
+		if(bookOp.isPresent()) {
+			Book findBook = bookOp.get();
+			
+			return new BookRespDto(findBook);
+		} else {
+			throw new CustomApiException(bookId + "번 책을 찾을 수 없습니다.");
+		}
 		
 	}
 }
