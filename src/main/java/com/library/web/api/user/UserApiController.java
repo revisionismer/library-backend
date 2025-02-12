@@ -24,8 +24,8 @@ public class UserApiController {
 	
 	private final UserService userService;
 	
-	@GetMapping("/{id}/info")
-	public ResponseEntity<?> userInfoByUserId(@PathVariable(value = "id") Long id, @AuthenticationPrincipal PrincipalDetails principalDetails) {
+	@GetMapping("/s/{userId}/info")
+	public ResponseEntity<?> userInfoByUserId(@PathVariable(value = "userId") Long id, @AuthenticationPrincipal PrincipalDetails principalDetails) {
 		
 		UserInfoRespDto userInfoRespDto = userService.userInfoByUserId(id);
 		
