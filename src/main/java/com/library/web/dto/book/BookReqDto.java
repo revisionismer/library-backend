@@ -6,6 +6,7 @@ import lombok.ToString;
 
 @ToString
 public class BookReqDto {
+	
 	private String bookName;
 	
 	private BigDecimal unitPrice;

@@ -118,5 +118,9 @@ public class Book {
 				.build();
 	}
 	
+	public void updateStock(int count) {
+		this.unitsInStock = unitsInStock - count;
+	}
+	
 	
 }
