@@ -11,6 +11,8 @@ import lombok.ToString;
 @ToString
 public class CartItemRespDto {
 
+	private Long cartId;
+	
 	private Long cartItemId;
 	
 	private Long bookId;
@@ -20,6 +22,7 @@ public class CartItemRespDto {
 	private int count;
 	
 	public CartItemRespDto(Cart cart, CartItem cartItem) {
+		this.cartId = cart.getId();
 		this.cartItemId = cartItem.getId();
 		this.bookId = cartItem.getBook().getId();
 		this.bookName = cartItem.getBook().getName();

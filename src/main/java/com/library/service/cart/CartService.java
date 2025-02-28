@@ -54,10 +54,12 @@ public class CartService {
 			result.add(
 					new CartDetailRespDto(
 							cart.getId(), 
+							cartItem.getId(),
 							cartItem.getBook().getName(), 
 							cartItem.getBook().getUnitPrice(), 
 							cartItem.getCount(), 
-							cartItem.getBook().getBookImageUrl()
+							cartItem.getBook().getBookImageUrl(),
+							cartItem.getBook().getUnitsInStock()
 					)
 			);
 		}
