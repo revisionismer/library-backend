@@ -1,4 +1,4 @@
-package com.library.domain.cart;
+package com.library.domain.order;
 
 import java.time.LocalDateTime;
 
@@ -6,11 +6,12 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.library.domain.delivery.Delivery;
 import com.library.domain.user.User;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -22,41 +23,34 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Builder
 @NoArgsConstructor 
 @AllArgsConstructor
 @Getter @Setter
-@Table(name = "cart_tb")
+@Table(name = "order_tb")
 @Entity
-@ToString
-public class Cart {
-	
-	@Id
+public class Order {
+
+	@Id 
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;  // 3-1. PK
+	private Long id;  // 5-1 PK		
+			
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "userId")
+	private User customer;  // 5-2. 주문자
 	
-	@OneToOne(fetch = FetchType.LAZY)  // 3-2. @OneToOne 어노테이션을 이용해 회원 엔티티와 일대일로 매핑(fetch 전략은 default가 EAGER)
-	@JoinColumn(name = "userId")  // 3-3. @JoinColumn 어노테이션을 이용해 외래키를 지정합니다. (user table의 id값을 userId 컬럼으로 만들어서 외래키로 지정)
-	private User user;
+	@OneToOne(cascade = CascadeType.ALL)	
+	@JoinColumn(name = "deliveryId")
+	private Delivery delivery;  // 5-3. 배송지
 	
 	@CreatedDate
  	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
  	@Column(nullable = false)
- 	private LocalDateTime createdDate;  // 3-4. 생성일
-	
-	@LastModifiedDate
+ 	private LocalDateTime createdDate;  // 5-4. 생성일자
+ 	 
+ 	@LastModifiedDate
  	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")
  	@Column(nullable = true)
- 	private LocalDateTime updatedDate;  // 3-5. 수정일
-	
-	// 3-6. 회원 엔티티를 파라미터로 받아서 장바구니 엔티티를 생성해주는 메소드
-	public static Cart createCart(User user) {
-		Cart cart = new Cart();
-		cart.setUser(user);
-		cart.setCreatedDate(LocalDateTime.now());
-		return cart;
-	}
-		
+ 	private LocalDateTime updatedDate;  // 5-5. 수정일자
 }
