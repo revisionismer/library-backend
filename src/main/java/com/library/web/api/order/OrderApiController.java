@@ -1,7 +1,5 @@
 package com.library.web.api.order;
 
-import java.util.List;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,7 +13,7 @@ import com.library.config.auth.PrincipalDetails;
 import com.library.domain.user.User;
 import com.library.service.order.OrderService;
 import com.library.web.dto.ResponseDto;
-import com.library.web.dto.cart.CartItemOrderRespDto;
+import com.library.web.dto.cart.CartItemListRespDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,8 +30,8 @@ public class OrderApiController {
 		
 		User loginUser = principalDetails.getUser();
 		
-		List<CartItemOrderRespDto> dtos = orderService.orderCartItem(jsonString, loginUser);
+		CartItemListRespDto result = orderService.orderCartItem(jsonString, loginUser);
 		
-		return new ResponseEntity<>(new ResponseDto<>(1, loginUser.getId() + "번 유저 장바구니 아이템 주문 하기", dtos), HttpStatus.OK);
+		return new ResponseEntity<>(new ResponseDto<>(1, loginUser.getId() + "번 유저 장바구니 아이템 주문 하기", result), HttpStatus.OK);
 	}
 }
