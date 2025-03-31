@@ -1,16 +1,31 @@
 package com.library.service.order;
 
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.library.domain.address.Address;
+import com.library.domain.address.AddressRepository;
+import com.library.domain.book.Book;
+import com.library.domain.book.BookRepository;
+import com.library.domain.cart_item.CartItemRepository;
+import com.library.domain.delivery.Delivery;
+import com.library.domain.delivery.DeliveryRepository;
+import com.library.domain.order.Order;
+import com.library.domain.order.OrderRepository;
+import com.library.domain.order_item.OrderItem;
+import com.library.domain.order_item.OrderItemRepository;
 import com.library.domain.user.User;
+import com.library.domain.user.UserRepository;
 import com.library.handler.exception.CustomApiException;
 import com.library.web.dto.cart.CartItemListRespDto;
 import com.library.web.dto.cart.CartItemOrderRespDto;
@@ -24,6 +39,16 @@ public class OrderService {
 	
 	private final ObjectMapper om;
 	
+	private final UserRepository userRepository;
+	private final AddressRepository addressRepository;
+	private final DeliveryRepository deliveryRepository;
+	private final OrderRepository orderRepository;
+	private final OrderItemRepository orderItemRepository;
+	
+	private final BookRepository bookRepository;
+	
+	private final CartItemRepository cartItemRepository;
+	
 	public CartItemListRespDto orderCartItem(String jsonString, User loginUser) {
 		
 		CartItemListRespDto cartItemListRespDto = getOrderCartItemList(jsonString, loginUser);
@@ -31,7 +56,62 @@ public class OrderService {
 		if(cartItemListRespDto.getCartItems().size() == 0) {
 			throw new CustomApiException("재고가 없습니다.");
 		}
-		// 2025-03-06 : 배송 정보를 등록하거나 적는 란이 필요할거 같음.
+		
+		Optional<Address> addressOp = addressRepository.findByUserId(loginUser.getId());
+		
+		if(addressOp.isEmpty()) {
+			throw new CustomApiException("배송 주소가 등록 되어있지 않습니다.");
+		} else {
+			
+			User orderUser = userRepository.findById(loginUser.getId()).get();
+			
+			Address address = addressOp.get();
+			
+			Delivery delivery = new Delivery();
+			delivery.setRecipient(orderUser.getName());
+			delivery.setDestination(
+					address.getCountry() + ", " + 
+					address.getZipcode() + ", " + 
+					address.getAddressName() + ", " + 
+					address.getDetailName());
+			
+			delivery.setUser(orderUser);
+			delivery.setCreatedDate(LocalDateTime.now());
+			
+			Delivery deliveryEntity = deliveryRepository.save(delivery);
+			
+			Order order = new Order();
+			order.setCustomer(orderUser);
+			order.setDelivery(deliveryEntity);
+			order.setCreatedDate(LocalDateTime.now());
+			
+			Order orderEntity = orderRepository.save(order);
+			
+			for(int i = 0; i < cartItemListRespDto.getCartItems().size(); i++) {
+				
+				OrderItem orderItem = new OrderItem();
+				orderItem.setOrder(orderEntity);
+				orderItem.setQuantity(cartItemListRespDto.getCartItems().get(i).getCount());
+				orderItem.setTotalPrice(BigDecimal.valueOf(cartItemListRespDto.getCartItems().get(i).getCount() * cartItemListRespDto.getCartItems().get(i).getPrice()));
+				
+				String bookName = cartItemListRespDto.getCartItems().get(i).getItemNm();
+				
+				Book orderBook = bookRepository.findByName(bookName);
+
+				orderItem.setBook(orderBook);
+				orderItem.setCreatedDate(LocalDateTime.now());
+				
+				orderItemRepository.save(orderItem);
+				
+				orderBook.updateStock(cartItemListRespDto.getCartItems().get(i).getCount());
+				
+				Long cartItemId = cartItemListRespDto.getCartItems().get(i).getCartItemId();
+				
+				cartItemRepository.deleteById(cartItemId);
+				
+			}
+			
+		}
 		
 		return cartItemListRespDto;
 	}
