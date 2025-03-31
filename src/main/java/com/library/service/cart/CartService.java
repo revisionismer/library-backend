@@ -87,8 +87,6 @@ public class CartService {
 			
 			CartItem cartItemEntity = cartItemRepository.save(cartItem);
 			
-			book.updateStock(cartItemReqDto.getCount());
-			
 			return new CartItemRespDto(cart, cartItemEntity);
 			
 		} else {
