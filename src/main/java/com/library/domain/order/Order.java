@@ -16,7 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,11 +36,11 @@ public class Order {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;  // 5-1 PK		
 			
-	@OneToOne(cascade = CascadeType.ALL)
+	@ManyToOne(cascade = CascadeType.ALL)
 	@JoinColumn(name = "userId")
 	private User customer;  // 5-2. 주문자
 	
-	@OneToOne(cascade = CascadeType.ALL)	
+	@ManyToOne(cascade = CascadeType.ALL)	
 	@JoinColumn(name = "deliveryId")
 	private Delivery delivery;  // 5-3. 배송지
 	
