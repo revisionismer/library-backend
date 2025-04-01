@@ -49,21 +49,21 @@ public class OrderService {
 	
 	private final CartItemRepository cartItemRepository;
 	
-	public CartItemListRespDto orderCartItem(String jsonString, User loginUser) {
+	public CartItemListRespDto orderCartItem(String jsonString, Long userId) {
 		
-		CartItemListRespDto cartItemListRespDto = getOrderCartItemList(jsonString, loginUser);
+		CartItemListRespDto cartItemListRespDto = getOrderCartItemList(jsonString);
 		
 		if(cartItemListRespDto.getCartItems().size() == 0) {
 			throw new CustomApiException("재고가 없습니다.");
 		}
 		
-		Optional<Address> addressOp = addressRepository.findByUserId(loginUser.getId());
+		Optional<Address> addressOp = addressRepository.findByUserId(userId);
 		
 		if(addressOp.isEmpty()) {
 			throw new CustomApiException("배송 주소가 등록 되어있지 않습니다.");
 		} else {
 			
-			User orderUser = userRepository.findById(loginUser.getId()).get();
+			User orderUser = userRepository.findOneById(userId);
 			
 			Address address = addressOp.get();
 			
@@ -116,7 +116,7 @@ public class OrderService {
 		return cartItemListRespDto;
 	}
  	
-	private CartItemListRespDto getOrderCartItemList(String jsonString, User loginUser) {
+	private CartItemListRespDto getOrderCartItemList(String jsonString) {
 		
 		// 1-1. carItem List 정보를 담을 to 객체 생성
 		CartItemListRespDto cartItemListRespDto = new CartItemListRespDto(); 

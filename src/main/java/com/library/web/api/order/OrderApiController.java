@@ -30,7 +30,7 @@ public class OrderApiController {
 		
 		User loginUser = principalDetails.getUser();
 		
-		CartItemListRespDto result = orderService.orderCartItem(jsonString, loginUser);
+		CartItemListRespDto result = orderService.orderCartItem(jsonString, loginUser.getId());
 		
 		return new ResponseEntity<>(new ResponseDto<>(1, loginUser.getId() + "번 유저 장바구니 아이템 주문 하기", result), HttpStatus.OK);
 	}
