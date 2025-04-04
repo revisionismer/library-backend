@@ -40,8 +40,11 @@ public class OrderService {
 	private final ObjectMapper om;
 	
 	private final UserRepository userRepository;
+	
 	private final AddressRepository addressRepository;
+	
 	private final DeliveryRepository deliveryRepository;
+	
 	private final OrderRepository orderRepository;
 	private final OrderItemRepository orderItemRepository;
 	
@@ -86,6 +89,8 @@ public class OrderService {
 			order.setCreatedDate(LocalDateTime.now());
 			
 			Order orderEntity = orderRepository.save(order);
+			
+			cartItemListRespDto.setOrderId(orderEntity.getId());
 			
 			for(int i = 0; i < cartItemListRespDto.getCartItems().size(); i++) {
 				
