@@ -13,5 +13,4 @@ import lombok.ToString;
 public class CartItemListRespDto {
 
 	private List<CartItemOrderRespDto> cartItems;
-	private Long orderId;
 }

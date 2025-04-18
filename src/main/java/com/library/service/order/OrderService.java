@@ -3,6 +3,7 @@ package com.library.service.order;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +12,9 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.library.domain.address.Address;
 import com.library.domain.address.AddressRepository;
@@ -29,6 +32,7 @@ import com.library.domain.user.UserRepository;
 import com.library.handler.exception.CustomApiException;
 import com.library.web.dto.cart.CartItemListRespDto;
 import com.library.web.dto.cart.CartItemOrderRespDto;
+import com.library.web.dto.order.OrderRespDto;
 
 import lombok.RequiredArgsConstructor;
 
@@ -52,11 +56,22 @@ public class OrderService {
 	
 	private final CartItemRepository cartItemRepository;
 	
-	public CartItemListRespDto orderCartItem(String jsonString, Long userId) {
+	public CartItemListRespDto conveyCartItems(String jsonString, Long userId) {
 		
 		CartItemListRespDto cartItemListRespDto = getOrderCartItemList(jsonString);
 		
 		if(cartItemListRespDto.getCartItems().size() == 0) {
+			throw new CustomApiException("재고가 없습니다.");
+		}
+		
+		return cartItemListRespDto;
+	}
+	
+	public OrderRespDto orderItems(String jsonString, Long userId) throws JsonMappingException, JsonProcessingException {
+		
+		List<CartItemOrderRespDto> cartItems = Arrays.asList(om.readValue(jsonString, CartItemOrderRespDto[].class));
+		
+		if(cartItems.size() == 0) {
 			throw new CustomApiException("재고가 없습니다.");
 		}
 		
@@ -90,16 +105,14 @@ public class OrderService {
 			
 			Order orderEntity = orderRepository.save(order);
 			
-			cartItemListRespDto.setOrderId(orderEntity.getId());
-			
-			for(int i = 0; i < cartItemListRespDto.getCartItems().size(); i++) {
+			for(int i = 0; i < cartItems.size(); i++) {
 				
 				OrderItem orderItem = new OrderItem();
 				orderItem.setOrder(orderEntity);
-				orderItem.setQuantity(cartItemListRespDto.getCartItems().get(i).getCount());
-				orderItem.setTotalPrice(BigDecimal.valueOf(cartItemListRespDto.getCartItems().get(i).getCount() * cartItemListRespDto.getCartItems().get(i).getPrice()));
+				orderItem.setQuantity(cartItems.get(i).getCount());
+				orderItem.setTotalPrice(BigDecimal.valueOf(cartItems.get(i).getCount() * cartItems.get(i).getPrice()));
 				
-				String bookName = cartItemListRespDto.getCartItems().get(i).getItemNm();
+				String bookName = cartItems.get(i).getItemNm();
 				
 				Book orderBook = bookRepository.findByName(bookName);
 
@@ -108,19 +121,20 @@ public class OrderService {
 				
 				orderItemRepository.save(orderItem);
 				
-				orderBook.updateStock(cartItemListRespDto.getCartItems().get(i).getCount());
+				orderBook.updateStock(cartItems.get(i).getCount());
 				
-				Long cartItemId = cartItemListRespDto.getCartItems().get(i).getCartItemId();
+				Long cartItemId = cartItems.get(i).getCartItemId();
 				
 				cartItemRepository.deleteById(cartItemId);
 				
 			}
 			
+			return new OrderRespDto(orderEntity, cartItems);
 		}
 		
-		return cartItemListRespDto;
+		
 	}
- 	
+	
 	private CartItemListRespDto getOrderCartItemList(String jsonString) {
 		
 		// 1-1. carItem List 정보를 담을 to 객체 생성
