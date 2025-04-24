@@ -2,18 +2,18 @@ package com.library.web.dto.order;
 
 import java.util.List;
 
-import com.library.web.dto.cart.CartItemOrderRespDto;
-
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-@ToString
 @Getter @Setter
 @NoArgsConstructor
-public class OrderCartItemRespDto {
+@AllArgsConstructor
+@ToString
+public class OrderListRespDto {
 	
-	private List<CartItemOrderRespDto> items;
-	
+	private List<OrderInfoRespDto> orderList;
+	private int orderCnt;
 }

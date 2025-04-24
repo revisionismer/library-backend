@@ -32,6 +32,8 @@ import com.library.domain.user.UserRepository;
 import com.library.handler.exception.CustomApiException;
 import com.library.web.dto.cart.CartItemListRespDto;
 import com.library.web.dto.cart.CartItemOrderRespDto;
+import com.library.web.dto.order.OrderInfoRespDto;
+import com.library.web.dto.order.OrderListRespDto;
 import com.library.web.dto.order.OrderRespDto;
 
 import lombok.RequiredArgsConstructor;
@@ -131,7 +133,44 @@ public class OrderService {
 			
 			return new OrderRespDto(orderEntity, cartItems);
 		}
+	}
+	
+	public OrderListRespDto getOrderInfoList(Long userId) {
 		
+		List<Order> orderList = orderRepository.findAllByUserId(userId);
+		
+		User orderUser = userRepository.findOneById(userId);
+		
+		Optional<Address> addressOp = addressRepository.findByUserId(userId);
+		
+		if(addressOp.isEmpty()) {
+			throw new CustomApiException("배송 주소가 등록 되어있지 않습니다.");
+		} else {
+			
+			Address address = addressOp.get();
+			
+			List<OrderInfoRespDto> result = new ArrayList<>();
+			
+			String deliveryAddress = address.getCountry() + ", " + 
+									 address.getZipcode() + ", " + 
+									 address.getAddressName() + ", " + 
+									 address.getDetailName();
+		
+			for(Order order : orderList) {
+				List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(order.getId());
+				
+				for(OrderItem orderItem : orderItems) {
+					result.add(new OrderInfoRespDto(
+						order, 
+						orderItem,
+						orderUser, 
+						deliveryAddress, 
+						orderItem.getTotalPrice()));
+				}
+			}
+			
+			return new OrderListRespDto(result, orderList.size());
+		}
 		
 	}
 	

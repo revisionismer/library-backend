@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,6 +17,7 @@ import com.library.domain.user.User;
 import com.library.service.order.OrderService;
 import com.library.web.dto.ResponseDto;
 import com.library.web.dto.cart.CartItemListRespDto;
+import com.library.web.dto.order.OrderListRespDto;
 import com.library.web.dto.order.OrderRespDto;
 
 import lombok.RequiredArgsConstructor;
@@ -45,6 +47,16 @@ public class OrderApiController {
 		OrderRespDto orderRespDto = orderService.orderItems(jsonString, loginUser.getId());
 		
 		return new ResponseEntity<>(new ResponseDto<>(1, loginUser.getId() + "번 유저 아이템 주문 하기", orderRespDto), HttpStatus.OK);
+	}
+	
+	@GetMapping("/s")
+	public ResponseEntity<?> getOrders(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+		
+		User loginUser = principalDetails.getUser();
+		
+		OrderListRespDto orderListRespDto = orderService.getOrderInfoList(loginUser.getId());
+		
+		return new ResponseEntity<>(new ResponseDto<>(1, loginUser.getId() + "번 유저의 주문 목록 리스트 불러오기", orderListRespDto), HttpStatus.OK);
 	}
 	
 }
