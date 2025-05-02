@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +35,7 @@ import com.library.handler.exception.CustomApiException;
 import com.library.web.dto.cart.CartItemListRespDto;
 import com.library.web.dto.cart.CartItemOrderRespDto;
 import com.library.web.dto.order.OrderInfoRespDto;
+import com.library.web.dto.order.OrderListPageRespDto;
 import com.library.web.dto.order.OrderListRespDto;
 import com.library.web.dto.order.OrderRespDto;
 
@@ -170,6 +173,60 @@ public class OrderService {
 			}
 			
 			return new OrderListRespDto(result, orderList.size());
+		}
+		
+	}
+	
+	public OrderListPageRespDto getOrderInfoList(Long userId, Pageable pageable) {
+		
+		Page<Order> orderList = orderRepository.findAllByUserIdPaging(userId, pageable);
+		
+		List<Integer> pageNumbers = new ArrayList<>();
+		
+		for (int i = 0; i < orderList.getTotalPages(); i++) {
+			pageNumbers.add(i + 1);
+	    }
+		
+		User orderUser = userRepository.findOneById(userId);
+		
+		Optional<Address> addressOp = addressRepository.findByUserId(userId);
+		
+		if(addressOp.isEmpty()) {
+			throw new CustomApiException("배송 주소가 등록 되어있지 않습니다.");
+		} else {
+			
+			Address address = addressOp.get();
+			
+			List<OrderInfoRespDto> result = new ArrayList<>();
+			
+			String deliveryAddress = address.getCountry() + ", " + 
+									 address.getZipcode() + ", " + 
+									 address.getAddressName() + ", " + 
+									 address.getDetailName();
+		
+			for(Order order : orderList) {
+				List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(order.getId());
+				
+				for(OrderItem orderItem : orderItems) {
+					result.add(new OrderInfoRespDto(
+						order, 
+						orderItem,
+						orderUser, 
+						deliveryAddress, 
+						orderItem.getTotalPrice()));
+				}
+			}
+			
+			return new OrderListPageRespDto(
+					result, 
+					orderList.getTotalElements(),
+					orderList.getNumber() - 1,
+					orderList.getNumber() + 1,
+					pageNumbers,
+					(orderList.getNumber() - 1) != -1 ? true : false, 
+					(orderList.getNumber() + 1) != orderList.getTotalPages() ? true : false, 
+					(orderList.getContent().size() == 0) ? true : false
+			);
 		}
 		
 	}
