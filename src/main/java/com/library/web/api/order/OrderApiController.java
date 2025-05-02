@@ -1,5 +1,7 @@
 package com.library.web.api.order;
 
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,7 +19,8 @@ import com.library.domain.user.User;
 import com.library.service.order.OrderService;
 import com.library.web.dto.ResponseDto;
 import com.library.web.dto.cart.CartItemListRespDto;
-import com.library.web.dto.order.OrderListRespDto;
+import com.library.web.dto.order.OrderListPageRespDto;
+// import com.library.web.dto.order.OrderListRespDto;
 import com.library.web.dto.order.OrderRespDto;
 
 import lombok.RequiredArgsConstructor;
@@ -50,13 +53,14 @@ public class OrderApiController {
 	}
 	
 	@GetMapping("/s")
-	public ResponseEntity<?> getOrders(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+	public ResponseEntity<?> getOrders(@AuthenticationPrincipal PrincipalDetails principalDetails, @PageableDefault(size = 6) Pageable pageable) {
 		
 		User loginUser = principalDetails.getUser();
 		
-		OrderListRespDto orderListRespDto = orderService.getOrderInfoList(loginUser.getId());
+	    // OrderListRespDto orderListRespDto = orderService.getOrderInfoList(loginUser.getId());
+		OrderListPageRespDto orderListPageRespDto = orderService.getOrderInfoList(loginUser.getId(), pageable);
 		
-		return new ResponseEntity<>(new ResponseDto<>(1, loginUser.getId() + "번 유저의 주문 목록 리스트 불러오기", orderListRespDto), HttpStatus.OK);
+		return new ResponseEntity<>(new ResponseDto<>(1, loginUser.getId() + "번 유저의 주문 목록 리스트 불러오기", orderListPageRespDto), HttpStatus.OK);
 	}
 	
 }
