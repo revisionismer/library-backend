@@ -35,6 +35,7 @@ import com.library.handler.exception.CustomApiException;
 import com.library.web.dto.cart.CartItemListRespDto;
 import com.library.web.dto.cart.CartItemOrderRespDto;
 import com.library.web.dto.order.OrderInfoRespDto;
+import com.library.web.dto.order.OrderItemRespDto;
 import com.library.web.dto.order.OrderListPageRespDto;
 import com.library.web.dto.order.OrderListRespDto;
 import com.library.web.dto.order.OrderRespDto;
@@ -60,6 +61,28 @@ public class OrderService {
 	private final BookRepository bookRepository;
 	
 	private final CartItemRepository cartItemRepository;
+	
+	public List<OrderItemRespDto> getOrderInfo(Long userId, Long orderId) {
+		
+		Optional<Order> orderOp = orderRepository.findById(orderId);
+		
+		if(orderOp.isPresent()) {
+			Order order = orderOp.get();
+			
+			List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(order.getId());
+			
+			List<OrderItemRespDto> result = new ArrayList<>();
+			
+			for(OrderItem orderItem : orderItems) {
+				result.add(new OrderItemRespDto(orderItem));
+			}
+			
+			return result;
+			
+		} else {
+			throw new CustomApiException(orderId + "번 주문 정보를 찾을 수 없습니다.");
+		}
+	}
 	
 	public CartItemListRespDto conveyCartItems(String jsonString, Long userId) {
 		
