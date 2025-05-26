@@ -69,7 +69,7 @@ public class OrderApiController {
 		
 		User loginUser = principalDetails.getUser();
 		
-		return new ResponseEntity<>(new ResponseDto<>(1, loginUser.getId() + "번 유저의 주문 목록 리스트 불러오기", orderService.getOrderInfo(loginUser.getId(), orderId)), HttpStatus.OK);
+		return new ResponseEntity<>(new ResponseDto<>(1, loginUser.getId() + "번 유저의 " + orderId  + "번 주문 목록 리스트 불러오기", orderService.getOrderInfo(loginUser.getId(), orderId)), HttpStatus.OK);
 	}
 	
 }
