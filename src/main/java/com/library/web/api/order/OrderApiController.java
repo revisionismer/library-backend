@@ -20,6 +20,7 @@ import com.library.domain.user.User;
 import com.library.service.order.OrderService;
 import com.library.web.dto.ResponseDto;
 import com.library.web.dto.cart.CartItemListRespDto;
+import com.library.web.dto.order.OrderInfoListRespDto;
 import com.library.web.dto.order.OrderListPageRespDto;
 // import com.library.web.dto.order.OrderListRespDto;
 import com.library.web.dto.order.OrderRespDto;
@@ -69,7 +70,9 @@ public class OrderApiController {
 		
 		User loginUser = principalDetails.getUser();
 		
-		return new ResponseEntity<>(new ResponseDto<>(1, loginUser.getId() + "번 유저의 " + orderId  + "번 주문 목록 리스트 불러오기", orderService.getOrderInfo(loginUser.getId(), orderId)), HttpStatus.OK);
+		OrderInfoListRespDto orderInfoListDto = orderService.getOrderInfo(loginUser.getId(), orderId);
+		
+		return new ResponseEntity<>(new ResponseDto<>(1, loginUser.getId() + "번 유저의 " + orderId  + "번 주문 목록 리스트 불러오기", orderInfoListDto), HttpStatus.OK);
 	}
 	
 }
