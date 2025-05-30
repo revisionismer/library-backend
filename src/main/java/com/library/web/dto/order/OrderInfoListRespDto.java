@@ -16,4 +16,5 @@ public class OrderInfoListRespDto {
 
 	private List<OrderItemRespDto> orderItems;
 	private int orderCnt;
+	private Long totalOrderPrice;
 }

@@ -22,7 +22,9 @@ public class OrderItemRespDto {
 	private int count;
 	private Long unitsInStock;
 	
-	private BigDecimal totalOrderPrice;
+	private String thumnailImageUrl;
+	
+	private BigDecimal totalOrderItemPrice;
 	
 	public OrderItemRespDto(OrderItem orderItem) {
 		this.orderId = orderItem.getOrder().getId();
@@ -31,7 +33,8 @@ public class OrderItemRespDto {
 		this.price = orderItem.getBook().getUnitPrice();
 		this.count = orderItem.getQuantity();
 		this.unitsInStock = orderItem.getBook().getUnitsInStock();
-		this.totalOrderPrice = orderItem.getTotalPrice();
+		this.thumnailImageUrl = orderItem.getBook().getBookImageUrl();
+		this.totalOrderItemPrice = orderItem.getTotalPrice();
 		
 	}
 }
