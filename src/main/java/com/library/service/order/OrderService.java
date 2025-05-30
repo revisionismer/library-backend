@@ -74,11 +74,14 @@ public class OrderService {
 			
 			List<OrderItemRespDto> result = new ArrayList<>();
 			
+			Long totalOrderPrice = 0L;
+			
 			for(OrderItem orderItem : orderItems) {
 				result.add(new OrderItemRespDto(orderItem));
+				totalOrderPrice += orderItem.getTotalPrice().longValue();
 			}
 			
-			return new OrderInfoListRespDto(result, result.size());
+			return new OrderInfoListRespDto(result, result.size(), totalOrderPrice);
 			
 		} else {
 			throw new CustomApiException(orderId + "번 주문 정보를 찾을 수 없습니다.");
