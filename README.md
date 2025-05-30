@@ -18,3 +18,4 @@
 16. 회원 주문 정보 리스트 불러오기 API 서비스 구현
 17. 주문 정보 API 서비스 구현(미완성)
 18. 주문 정보 API 서비스 구현(완성)
+19. orderService 로직 수정 및 orderInfoListRespDto, orderItemRespDto 코드 수정
