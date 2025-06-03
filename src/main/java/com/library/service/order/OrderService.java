@@ -34,6 +34,7 @@ import com.library.domain.user.UserRepository;
 import com.library.handler.exception.CustomApiException;
 import com.library.web.dto.cart.CartItemListRespDto;
 import com.library.web.dto.cart.CartItemOrderRespDto;
+import com.library.web.dto.delivery.DeliveryInfoDto;
 import com.library.web.dto.order.OrderInfoListRespDto;
 import com.library.web.dto.order.OrderInfoRespDto;
 import com.library.web.dto.order.OrderItemRespDto;
@@ -81,7 +82,9 @@ public class OrderService {
 				totalOrderPrice += orderItem.getTotalPrice().longValue();
 			}
 			
-			return new OrderInfoListRespDto(result, result.size(), totalOrderPrice);
+			Delivery delivery = deliveryRepository.findByUserId(userId);
+			
+			return new OrderInfoListRespDto(result, result.size(), totalOrderPrice, new DeliveryInfoDto(delivery, userId));
 			
 		} else {
 			throw new CustomApiException(orderId + "번 주문 정보를 찾을 수 없습니다.");
