@@ -6,6 +6,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.library.domain.order.Order;
 import com.library.domain.user.User;
 
 import jakarta.persistence.Column;
@@ -16,6 +17,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,6 +44,10 @@ public class Delivery {
 	@JoinColumn(name = "userId")  // @JoinColumn : 연관관계의 주인이라는 뜻, Object를 선언할때는 외래키의 이름을 지정
 	@ManyToOne(fetch = FetchType.LAZY)
 	private User user;
+	
+	@JoinColumn(name = "orderId")
+	@OneToOne
+	private Order order;
 
 	@CreatedDate
  	@JsonFormat(pattern = "yyyy-MM-dd HH:mm")

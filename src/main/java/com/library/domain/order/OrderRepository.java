@@ -13,7 +13,7 @@ public interface OrderRepository extends JpaRepository<Order, Long>{
 	@Query(value = "SELECT * FROM order_tb WHERE userId = :userId ORDER BY id DESC ", nativeQuery = true)
 	List<Order> findAllByUserId(@Param("userId") Long userId);
 	
-	@Query(value = "SELECT * FROM order_tb ORDER BY id DESC", nativeQuery = true)
+	@Query(value = "SELECT * FROM order_tb WHERE userId = :userId ORDER BY id DESC ", nativeQuery = true)
 	Page<Order> findAllByUserIdPaging(@Param("userId") Long userId, Pageable pageable);
 	
 }
