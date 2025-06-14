@@ -20,3 +20,4 @@
 18. 주문 정보 API 서비스 구현(완성)
 19. orderService 로직 수정 및 orderInfoListRespDto, orderItemRespDto 코드 수정
 20. deliveryInfoDto 생성 및 주문 정보 리스트 조회 API 서비스 로직에 추가
+21. OrderListPageRespDto 코드 수정

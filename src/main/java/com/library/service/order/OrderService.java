@@ -82,7 +82,7 @@ public class OrderService {
 				totalOrderPrice += orderItem.getTotalPrice().longValue();
 			}
 			
-			Delivery delivery = deliveryRepository.findByUserId(userId);
+			Delivery delivery = deliveryRepository.findByUserIdAndOrderId(userId, orderId);
 			
 			return new OrderInfoListRespDto(result, result.size(), totalOrderPrice, new DeliveryInfoDto(delivery, userId));
 			
@@ -140,6 +140,8 @@ public class OrderService {
 			
 			Order orderEntity = orderRepository.save(order);
 			
+			deliveryEntity.setOrder(orderEntity);
+			
 			for(int i = 0; i < cartItems.size(); i++) {
 				
 				OrderItem orderItem = new OrderItem();
@@ -190,16 +192,7 @@ public class OrderService {
 									 address.getDetailName();
 		
 			for(Order order : orderList) {
-				List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(order.getId());
-				
-				for(OrderItem orderItem : orderItems) {
-					result.add(new OrderInfoRespDto(
-						order, 
-						orderItem,
-						orderUser, 
-						deliveryAddress, 
-						orderItem.getTotalPrice()));
-				}
+				result.add(new OrderInfoRespDto(order, orderUser, deliveryAddress));
 			}
 			
 			return new OrderListRespDto(result, orderList.size());
@@ -235,16 +228,7 @@ public class OrderService {
 									 address.getDetailName();
 		
 			for(Order order : orderList) {
-				List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(order.getId());
-				
-				for(OrderItem orderItem : orderItems) {
-					result.add(new OrderInfoRespDto(
-						order, 
-						orderItem,
-						orderUser, 
-						deliveryAddress, 
-						orderItem.getTotalPrice()));
-				}
+				result.add(new OrderInfoRespDto(order, orderUser, deliveryAddress));
 			}
 			
 			return new OrderListPageRespDto(
