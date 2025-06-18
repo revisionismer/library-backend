@@ -28,10 +28,10 @@ public class BookApiController {
 	
 	private final BookService bookService;
 	
-	@GetMapping("/s/all")
-	public ResponseEntity<?> readBookList(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+	@GetMapping("/all")
+	public ResponseEntity<?> readBookList() {
 		
-		BookListRespDto bookList = bookService.getAllBookList(principalDetails.getUser());
+		BookListRespDto bookList = bookService.getAllBookList();
 	
 		return new ResponseEntity<>(new ResponseDto<>(1, "도서 정보 리스트 조회 성공", bookList), HttpStatus.OK);
 	}
