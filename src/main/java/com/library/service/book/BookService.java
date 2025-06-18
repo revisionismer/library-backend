@@ -28,7 +28,7 @@ public class BookService {
 	private final FileService fileService;
 	
 	@Transactional(readOnly = true)
-	public BookListRespDto getAllBookList(User loginUser) {
+	public BookListRespDto getAllBookList() {
 		
 		List<BookRespDto> result = new ArrayList<>();
 		
